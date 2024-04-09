@@ -172,7 +172,7 @@ educ_activity %>%
     plot.margin = margin(20, 20, 20, 20)
   ) -> alluvial
 
-ggsave("alluvial.pdf",alluvial,width=8,height=15,units="in")
+ggsave("./plots/alluvial.pdf",alluvial,width=8,height=15,units="in")
 ```
 
 expats by education and country
@@ -480,8 +480,11 @@ bubbles %>%
     plot.background = element_rect(fill="white", colour="black"),  # White plot background with black border
     plot.margin = margin(20, 20, 20, 20)  # Adjust plot margins
   ) +
-  ylim(c(0, 4)) +  # Y-axis limits
-  xlim(c(0, 8))    # X-axis limits
+  ylim(c(0, 4)) + 
+  xlim(c(0, 8))    ->bubbles_plot
+
+ggsave("./plots/bubbles.pdf",bubbles_plot,width=8,height=5,units="in")
+
 ```
 
 

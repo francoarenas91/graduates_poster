@@ -1,0 +1,29 @@
+---
+title: "From University to the workplace. Main findings by field of study"
+author: "Francisco Franco Arenas"
+date: "IST.719.M001"
+output:
+  pdf_document: default
+  word_document: default
+---
+
+# Dataset Description:
+
+The **Survey on the labour market insertion of university graduates** offers a detailed examination of the employment status and career paths of individuals holding university degrees in Spain, focusing on their integration into the workforce and the relevance of their education to their current jobs. This study provides insights into the effectiveness of higher education in preparing graduates for the labor market.
+
+# Compelling story
+
+The poster presents an analysis comparing outcomes across different fields of study, focusing on the sectoral employment of university graduates, the prevalence and reasons for expatriation, variations in salary, and the degree of alignment between academic training and actual job requirements.This visualization aims to show the effectiveness of each field of study in preparing graduates for the demands of the labor market.
+
+# Audience
+
+This visualization serves as a crucial resource for prospective students, offering them a data-driven perspective on the outcomes associated with various fields of study, therefore assisting in making well-informed decisions regarding their academic and career paths. Simultaneously, it acts as a valuable analytical tool for policymakers and stakeholders within the academic community, providing  insights necessary for developing policy recommendations and reforms in higher education to better meet the demands of the labor market.
+
+# Questions
+
++ How effective is each field of study in providing useful skills for the workplace?
++ To which sectors flow the graduates of each field of studies?
++ What are the reasons for expatriation for each field of studies?
++ What are the different wages obtained after graduation by field of studies?
+
+
