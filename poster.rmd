@@ -1,7 +1,8 @@
 ```{r, include=FALSE,echo=FALSE}
 
 
-PAQUETES <- c("dplyr","tidyverse","ggplot2","ggalluvial","viridis","ggridges","fmsb","maps","treemap","forcats")
+PAQUETES <- c("dplyr","tidyverse","ggplot2","ggalluvial","viridis",
+              "ggridges","fmsb","maps","treemap","forcats","ggrepel")
 
 for (el in PAQUETES){
   if (!require(el, character.only = TRUE)) {
@@ -15,7 +16,7 @@ rm(PAQUETES, el)
 ```
 
 ```{r}
-data<-read_tsv("./data/datos_2019/EILU_GRADUADOS/CSV/EILU_GRAD_2019.csv")
+data<-read_tsv("../data/datos_2019/EILU_GRADUADOS/CSV/EILU_GRAD_2019.csv")
 ```
 recode data
 ```{r}
@@ -134,23 +135,78 @@ Alluvial plot from field of studies to sector
 data_recoded %>% select(RAMA,AMBITO,TRBPRN1, TR_CNAE,FACTOR) %>% 
   group_by(AMBITO,TR_CNAE) %>% 
   summarise(FACTOR=sum(FACTOR)) %>% 
-  mutate(AMBITO=factor(AMBITO))-> educ_activity
+  mutate(AMBITO=factor(AMBITO),
+         TR_CNAE=factor(TR_CNAE))-> educ_activity
 
 # Manually reorder FACTOR levels
-#TODO: Do this for AMBITO
-educ_activity$RAMA <- fct_relevel(educ_activity$RAMA,
-                                   "Arts and Humanities",
-                                   "Sciences",
-                                   "Social Sciences and Law",
-                                   "Engineering and Architecture",
-                                   "Health Sciences"
+educ_activity$AMBITO <- fct_relevel(educ_activity$AMBITO,
+                                   "Agriculture",
+                                   "Environmental Science and Forestry",
+                                   "Manufacturing",
+                                   "Engineering",
+                                   "Architecture",
+                                   "Computer Science",
+                                   "Mathematics and Statistics",
+                                   "Physical Sciences",
+                                   "Business",
+                                   "Law",
+                                   "Economics",
+                                   "Journalism",
+                                   "Psychology",
+                                   "Social Sciences",
+                                   "Languages",
+                                   "Humanities",
+                                   "Education",
+                                   "Life Sciences",
+                                   "Medicine",
+                                   "Veterinary",
+                                   "Nursing",
+                                   "Health Sciences",
+                                   "Social Services",
+                                   "Sports Education",
+                                   "Arts and Communication",
+                                   "Tourism and Leisure",
+                                   "Other",
+                                   "Not Specified",
                                    )
+
+educ_activity$TR_CNAE <- fct_relevel(educ_activity$TR_CNAE,
+                         "Primary Sector",
+                         "Manufacturing",
+                          "Transport and Utilities",
+                         "Construction",
+                         "Trade and Repairs",
+                          "Hospitality",
+                         "Information and Comunication",
+                         "Finance and Real Estate",
+                         "Professional Services",
+                         "Public Administration",
+                         "Education",
+                         "Healthcare and Social Services",
+                         "Art and Entertainment",
+                         "Other Services",
+                         "Not Available",
+                         "Unemployed",
+                         "Inactive"
+                                   )
+educ_activity$TR_CNAE %>% unique()
+
+levels(educ_activity$AMBITO)
+levels(educ_activity$TR_CNAE)
+
+
+ 
 
 educ_activity %>%
   ggplot(aes(axis1 = AMBITO, axis2 = TR_CNAE, y = FACTOR)) +
-  geom_alluvium(aes(fill = AMBITO)) +
-  geom_stratum(color="grey30") +
+  geom_alluvium(aes(fill = AMBITO),aes.bind = "flows") +
+  scale_x_discrete(expand = c(.4, 0)) +
+  # geom_flow(width = 1/4) +
+  geom_stratum(color="grey30",width = 1/4) +
+  scale_linetype_manual(values = c("blank", "solid")) +
+
   geom_text(stat = "stratum", aes(label = after_stat(stratum)), size = 3.5) + 
+  scale_x_discrete(limits = c("Education", "Sector"), expand = c(.2, .05)) +
   labs(
     title = "Educational Background and Sector of Employment",
     x = "",
@@ -160,7 +216,7 @@ educ_activity %>%
   theme_minimal(base_size = 14) +
   theme(
     plot.title = element_text(size=20, face="bold"),
-    axis.text.x = element_blank(),
+    axis.text.x = element_text(size=20),
     axis.text.y = element_text(size=14),
     axis.title.x = element_blank(),
     axis.title.y = element_blank(),
@@ -170,10 +226,18 @@ educ_activity %>%
     # panel.background = element_rect(fill="white", colour="black"),
     # plot.background = element_rect(fill="white", colour="black"),
     plot.margin = margin(20, 20, 20, 20)
-  ) -> alluvial
+  ) 
+
+-> alluvial
+
+vignette(topic = "order-rectangles", package = "ggalluvial")
+
 
 ggsave("./plots/alluvial.pdf",alluvial,width=8,height=15,units="in")
 ```
+
+
+
 
 expats by education and country
 ```{r}
@@ -483,7 +547,7 @@ bubbles %>%
   ylim(c(0, 4)) + 
   xlim(c(0, 8))    ->bubbles_plot
 
-ggsave("./plots/bubbles.pdf",bubbles_plot,width=8,height=5,units="in")
+ggsave("./plots/bubbles.pdf",bubbles_plot,width=12,height=8,units="in")
 
 ```
 
@@ -577,8 +641,9 @@ reasons_expat %>%
     panel.background = element_rect(fill="white", colour="black"),
     plot.background = element_rect(fill="white", colour="black"),
     plot.margin = margin(20, 20, 20, 20)
-  )
+  )-> expat_plot
   
+ggsave("./plots/expat.pdf",expat_plot,width=12,height=10,units="in")
 
 ```
 
@@ -626,8 +691,10 @@ wages %>%
     panel.background = element_blank(),
     plot.background = element_blank(),
     plot.margin = margin(20, 20, 20, 20)
-  ) 
+  ) ->ridgeline
 
+
+ggsave("./plots/ridgeline.pdf",ridgeline,width=12,height=10,units="in")
 ```
 
 
@@ -689,7 +756,7 @@ ggplot(aes(y=reorder(AMBITO, order), x=values)) +
                        labels = function(x) paste0(x, "%")) +  
   scale_shape_manual(values=c(17, 18)) +
   labs(
-    title = "Relationship between Field of Study and Work Relevance",
+    title = "Work Relevance",
     y = "",
     x = "Percentage of Recent Graduates Employed",
     caption = "Source: INE, Survey on the labour market insertion of university graduates"
@@ -711,7 +778,9 @@ ggplot(aes(y=reorder(AMBITO, order), x=values)) +
     plot.background = element_rect(fill="white", colour="black"),
     plot.margin = margin(20, 20, 20, 20)  
   ) +
-  guides(color=guide_legend(title.position = "top", label.position = "right", ncol = 1))
+  guides(color=guide_legend(title.position = "top", label.position = "right", ncol = 1)) -> work_relevance
+
+ggsave("./plots/relevance.pdf",work_relevance,width=12,height=10,units="in")
 
 
 ```
